@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
         HandleVisualDirection();
     }
 
-    private void MakeInitial()
+    public void MakeInitial()
     {
         _flightVector = new Vector2(0, -1);
         _renderer.enabled = true;

@@ -42,6 +42,7 @@ public class GameSceneManager : MonoBehaviour
 
         StopInGameObjects();
         StopResultObjects();
+        StartHomeObjects();
     }
 
 
@@ -127,13 +128,16 @@ public class GameSceneManager : MonoBehaviour
     private void ResultUpdate()
     {
         if (_state != GameSceneState.Result) return;
+
+        var curtainPosition = _player.transform.position;
+        curtainPosition.z = 0;
+        _curtain.transform.position = curtainPosition; 
     }
 
     private void HomeUpdate()
     {
         if (_state != GameSceneState.Home) return;
 
-        _curtain.transform.position = this.transform.position;
     }
 
     void InGameUpdate()
@@ -169,6 +173,7 @@ public class GameSceneManager : MonoBehaviour
     void StopResultObjects()
     {
         _curtain.gameObject.SetActive(false);
+        _playButton.gameObject.SetActive(false);
     }
 
     void StopHomeObjects()
@@ -210,9 +215,10 @@ public class GameSceneManager : MonoBehaviour
 
             _title.GetComponent<Image>().color = originTitleColor;
             _playButton.GetComponent<Image>().color = originButtonColor;
-
         }
 
+        _player.MakeInitial();
+        StopResultObjects();
         StopHomeObjects();
         StartInGameObjects();
 
@@ -238,21 +244,26 @@ public class GameSceneManager : MonoBehaviour
 
         while (true)
         {
-            curColor.a += 0.1f;
+            curColor.a += 0.01f;
             renderer.color = curColor;
 
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.01f);
 
-            if (curColor.a > 0.4f)
+            if (curColor.a > 0.20f)
                 break;
         }
 
         StartResultObjects();
-
     }
 
     private void StartResultObjects()
     {
+        _playButton.gameObject.SetActive(true);
+    }
+
+    private void StartHomeObjects()
+    {
+        _title.gameObject.SetActive(true);
         _playButton.gameObject.SetActive(true);
     }
 }
