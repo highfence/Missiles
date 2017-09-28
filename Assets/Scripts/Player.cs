@@ -20,16 +20,21 @@ public class Player : MonoBehaviour
     #endregion
 
     #region UPDATE METHODS
-    
+
+    private void FixedUpdate()
+    {
+        
+    }
+
     private void Update()
     {
-        KeepSteerWithDirection();        
+        HandleVisualDirection();
     }
 
     // 스프라이트의 방향이 방향 벡터와 알맞게 되도록 맞춰주는 메소드.
-    void KeepSteerWithDirection()
+    void HandleVisualDirection()
     {
-        float angle = Mathf.Atan2(_flightVec.x, _flightVec.y) * Mathf.Rad2Deg;
+        float angle        = Mathf.Atan2(_flightVec.x, _flightVec.y) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 

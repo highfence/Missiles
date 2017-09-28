@@ -8,6 +8,7 @@ public class GameSceneManager : MonoBehaviour
 
     Player _player;
     Vector2 _playerPosition;
+    DirectionController _controller;
 
     #endregion
 
@@ -16,7 +17,20 @@ public class GameSceneManager : MonoBehaviour
     void Start()
     {
         VariableInitialize();
+        ControllerInitialize();
         PlayerInitialize();
+    }
+
+    void ControllerInitialize()
+    {
+        _controller = DirectionController.Factory.Create();
+        var controllerPosition = new Vector2();
+        controllerPosition.x = Screen.width / 2;
+        controllerPosition.y = Screen.height * 0.15f;
+        var worldPosition = Camera.main.ScreenToWorldPoint(controllerPosition);
+        worldPosition.z = 0f;
+
+        _controller.SetInitialPosition(worldPosition);
     }
 
     void PlayerInitialize()
@@ -32,7 +46,7 @@ public class GameSceneManager : MonoBehaviour
         var fixedPosition = new Vector2();
         fixedPosition.x = Screen.width / 2;
         fixedPosition.y = Screen.height / 2;
-        _playerPosition = Camera.main.ScreenToViewportPoint(fixedPosition);
+        _playerPosition = Camera.main.ScreenToWorldPoint(fixedPosition);
     }
 
     #endregion

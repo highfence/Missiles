@@ -22,13 +22,15 @@ public class LaunchManager : MonoBehaviour
     // 화면 관련 옵션들을 정리해주는 메소드.
     private void SetScreenOptions()
     {
-        Screen.SetResolution(720, 1280, false);
+        Screen.SetResolution(540, 960, false);
     }
 
     // 로딩 씬 관련 메소드.
     private void LoadingSceneSettings()
     {
         _loadingRenderer = this.GetComponent<SpriteRenderer>();
+
+        // TODO :: 렌더러 transform 이용하여 스케일을 잘 맞도록 해주어야 함.
 
         StartCoroutine("PlayLoadingScene");
     }
@@ -45,8 +47,10 @@ public class LaunchManager : MonoBehaviour
             curColor.a += 0.05f;
             _loadingRenderer.color = curColor;
 
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.05f);
         }
+
+        yield return new WaitForSeconds(0.5f);
 
         SceneManager.LoadScene("1. Game");
     }
