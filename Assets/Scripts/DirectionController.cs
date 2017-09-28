@@ -21,6 +21,10 @@ public class DirectionController : MonoBehaviour
         _maxRadius = 30f;
     }
 
+    private void Start()
+    {
+    }
+
     private void Update()
     {
         DetectControll();        

@@ -24,7 +24,13 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HandleLogicDirection();        
+        HandleLogicDirection();
+        GoStraight();
+    }
+
+    private void GoStraight()
+    {
+
     }
 
     private void Update()
