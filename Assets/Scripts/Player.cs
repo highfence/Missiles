@@ -60,7 +60,6 @@ public class Player : MonoBehaviour
         _flightVector = _aimVector;
     }
 
-
     #endregion
 
     #region INITIALIZE METHODS

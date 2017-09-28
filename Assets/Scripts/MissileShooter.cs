@@ -8,6 +8,7 @@ public class MissileShooter : MonoBehaviour
     private float _accTime = 0f;
     GameObject[] _missilePool = null;
     private int _poolSize = 20;
+    Vector2 _currentPlayerPosition = Vector2.zero;
 
     public void Initialize()
     {
@@ -46,7 +47,7 @@ public class MissileShooter : MonoBehaviour
                     continue;
 
                 missile.SetActive(true);
-                missile.GetComponent<Missile>().Spawn(MissileType.Basic);
+                missile.GetComponent<Missile>().Spawn(MissileType.Basic, _currentPlayerPosition);
                 _accTime = 0f;
                 break;
             }
@@ -55,7 +56,7 @@ public class MissileShooter : MonoBehaviour
 
     public void DistributePlayerInfo(Vector3 playerPosition)
     {
-        var inputVector = new Vector2(playerPosition.x, playerPosition.y);
+        _currentPlayerPosition = new Vector2(playerPosition.x, playerPosition.y);
 
         for (var i = 0; i < _poolSize; ++i)
         {
@@ -64,7 +65,7 @@ public class MissileShooter : MonoBehaviour
             if (missile.activeSelf == false)
                 continue;
 
-            missile.GetComponent<Missile>().SetPlayerPosition(playerPosition);
+            missile.GetComponent<Missile>().SetPlayerPosition(_currentPlayerPosition);
         }
     }
 }

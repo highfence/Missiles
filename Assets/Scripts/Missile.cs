@@ -16,6 +16,7 @@ public class Missile : MonoBehaviour
     SpriteRenderer _renderer;
     Sprite _basicMissile;
     float _accTime;
+    float _outRange;
 
     public bool _isMissileValid { get; private set; }
 
@@ -23,11 +24,12 @@ public class Missile : MonoBehaviour
     {
         _isMissileValid = false;
         _renderer = this.GetComponent<SpriteRenderer>();
+        _outRange = 20f;
 
         _basicMissile = Resources.Load<Sprite>("Sprites/BasicMissile");
     }
 
-    public void Spawn(MissileType type)
+    public void Spawn(MissileType type, Vector2 currentPlayerPosision)
     {
         // TODO :: 데이터를 빼다가 읽어줘야 됨.
         _spec = new MissileSpec()
@@ -42,6 +44,12 @@ public class Missile : MonoBehaviour
         _renderer.sprite = _basicMissile;
 
         // TODO :: 미사일 위치를 랜덤하게 해주어야 함.
+        var randomUnitVec = new Vector2(UnityEngine.Random.Range(-1, 1), UnityEngine.Random.Range(-1, 1));
+        randomUnitVec.Normalize();
+        var spawnPosition = _playerPosition + randomUnitVec * _outRange;
+
+        this.transform.position = spawnPosition;
+
         _isMissileValid = true;
     }
 
