@@ -20,7 +20,7 @@ public class GameSceneManager : MonoBehaviour
     Background          _background;
     DirectionController _controller;
     GameObject          _playButton;
-    Sprite              _title;
+    GameObject          _title;
     Camera              _gameCamera;
     MissileShooter      _missileShooter;
     public GameSceneState      _state;
@@ -85,6 +85,12 @@ public class GameSceneManager : MonoBehaviour
         _playButton.GetComponent<Button>().onClick.AddListener(OnPlayButtonClicked);
 
         uiSystem.AttachUI(_playButton);
+
+        _title = Instantiate(Resources.Load("Prefabs/Title")) as GameObject;
+        var titlePosition = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height * 0.8f, 0));
+        titlePosition.z = 0;
+        _title.transform.position = titlePosition;
+        uiSystem.AttachUI(_title);
     }
 
     void PlayerInitialize()
@@ -130,7 +136,6 @@ public class GameSceneManager : MonoBehaviour
     {
         if (_state != GameSceneState.InGame) return;
 
-
         if (_player._isPlayerDead == true)
         {
             _state = GameSceneState.Result;
@@ -157,13 +162,61 @@ public class GameSceneManager : MonoBehaviour
         _missileShooter.gameObject.SetActive(false);
     }
 
-    private void StopResultObjects()
+    void StopResultObjects()
     {
+    }
+
+    void StopHomeObjects()
+    {
+        _title.gameObject.SetActive(false);
+        _playButton.gameObject.SetActive(false);
     }
 
     public void OnPlayButtonClicked()
     {
-        _state = GameSceneState.InGame;
+        StartCoroutine("GoToInGameState");
+    }
 
+    IEnumerator GoToInGameState()
+    {
+        if (_state == GameSceneState.Home)
+        {
+            var titleColor = _title.GetComponent<Image>().color;
+            var buttonColor = _playButton.GetComponent<Image>().color;
+
+            while (true)
+            {
+                titleColor.a -= 0.1f;
+                buttonColor.a -= 0.1f;
+
+                _title.GetComponent<Image>().color = titleColor;
+                _playButton.GetComponent<Image>().color = buttonColor;
+
+                if (titleColor.a <= 0.0f) break;
+
+                yield return new WaitForSeconds(0.05f);
+            }
+
+            var originTitleColor = _title.GetComponent<Image>().color;
+            var originButtonColor = _playButton.GetComponent<Image>().color;
+
+            originTitleColor.a = 1;
+            originButtonColor.a = 1;
+
+            _title.GetComponent<Image>().color = originTitleColor;
+            _playButton.GetComponent<Image>().color = originButtonColor;
+
+        }
+
+        StopHomeObjects();
+        StartInGameObjects();
+
+        _state = GameSceneState.InGame;
+    }
+
+    private void StartInGameObjects()
+    {
+        _controller.gameObject.SetActive(true);
+        _missileShooter.gameObject.SetActive(true);
     }
 }
