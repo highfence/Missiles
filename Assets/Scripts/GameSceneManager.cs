@@ -30,7 +30,7 @@ public class GameSceneManager : MonoBehaviour
         var worldPosition = Camera.main.ScreenToWorldPoint(controllerPosition);
         worldPosition.z = 0f;
 
-        _controller.SetInitialPosition(worldPosition);
+        _controller.SetInitialPosition(controllerPosition);
     }
 
     void PlayerInitialize()
