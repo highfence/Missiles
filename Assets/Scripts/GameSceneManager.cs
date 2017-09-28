@@ -21,6 +21,7 @@ public class GameSceneManager : MonoBehaviour
     DirectionController _controller;
     GameObject          _playButton;
     GameObject          _title;
+    GameObject          _curtain;
     Camera              _gameCamera;
     MissileShooter      _missileShooter;
     public GameSceneState      _state;
@@ -91,6 +92,8 @@ public class GameSceneManager : MonoBehaviour
         titlePosition.z = 0;
         _title.transform.position = titlePosition;
         uiSystem.AttachUI(_title);
+
+        _curtain = Instantiate(Resources.Load("Prefabs/Curtain")) as GameObject;
     }
 
     void PlayerInitialize()
@@ -130,6 +133,7 @@ public class GameSceneManager : MonoBehaviour
     {
         if (_state != GameSceneState.Home) return;
 
+        _curtain.transform.position = this.transform.position;
     }
 
     void InGameUpdate()
@@ -138,7 +142,7 @@ public class GameSceneManager : MonoBehaviour
 
         if (_player._isPlayerDead == true)
         {
-            _state = GameSceneState.Result;
+            StartCoroutine("GoToResultState");
         }
 
         _missileShooter.DistributePlayerInfo(_player.transform.position);
@@ -164,6 +168,7 @@ public class GameSceneManager : MonoBehaviour
 
     void StopResultObjects()
     {
+        _curtain.gameObject.SetActive(false);
     }
 
     void StopHomeObjects()
@@ -218,5 +223,36 @@ public class GameSceneManager : MonoBehaviour
     {
         _controller.gameObject.SetActive(true);
         _missileShooter.gameObject.SetActive(true);
+    }
+
+    IEnumerator GoToResultState()
+    {
+        StopInGameObjects();
+        _state = GameSceneState.Result;
+
+        _curtain.gameObject.SetActive(true);
+        var renderer = _curtain.GetComponent<SpriteRenderer>();
+        var curColor = renderer.color;
+        curColor.a = 0f;
+        renderer.color = curColor;
+
+        while (true)
+        {
+            curColor.a += 0.1f;
+            renderer.color = curColor;
+
+            yield return new WaitForSeconds(0.05f);
+
+            if (curColor.a > 0.4f)
+                break;
+        }
+
+        StartResultObjects();
+
+    }
+
+    private void StartResultObjects()
+    {
+        _playButton.gameObject.SetActive(true);
     }
 }
