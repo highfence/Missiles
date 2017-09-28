@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum GameSceneState
 {
@@ -19,10 +20,10 @@ public class GameSceneManager : MonoBehaviour
     Background          _background;
     DirectionController _controller;
     GameObject          _playButton;
+    Sprite              _title;
     Camera              _gameCamera;
     MissileShooter      _missileShooter;
-    GameSceneState      _state;
-
+    public GameSceneState      _state;
     #endregion
 
     #region INITIALIZE METHODS
@@ -37,7 +38,11 @@ public class GameSceneManager : MonoBehaviour
         CameraInitialize();
         BackgroundInitialize();
         MissileShooterInitialize();
+
+        StopInGameObjects();
+        StopResultObjects();
     }
+
 
     private void MissileShooterInitialize()
     {
@@ -74,9 +79,11 @@ public class GameSceneManager : MonoBehaviour
         uiSystem.AttachUI(_controller.gameObject);
 
         _playButton = Instantiate(Resources.Load("Prefabs/PlayButton")) as GameObject;
-        var buttonPosition = Camera.main.ScreenToWorldPoint(controllerPosition + new Vector2(0, 150));
+        var buttonPosition = Camera.main.ScreenToWorldPoint(controllerPosition + new Vector2(0, 100));
         buttonPosition.z = 0;
         _playButton.transform.position = buttonPosition;
+        _playButton.GetComponent<Button>().onClick.AddListener(OnPlayButtonClicked);
+
         uiSystem.AttachUI(_playButton);
     }
 
@@ -101,6 +108,8 @@ public class GameSceneManager : MonoBehaviour
 
     void Update()
     {
+        PositionSync();
+
         HomeUpdate();
         InGameUpdate();
         ResultUpdate();
@@ -114,18 +123,19 @@ public class GameSceneManager : MonoBehaviour
     private void HomeUpdate()
     {
         if (_state != GameSceneState.Home) return;
+
     }
 
     void InGameUpdate()
     {
         if (_state != GameSceneState.InGame) return;
 
+
         if (_player._isPlayerDead == true)
         {
             _state = GameSceneState.Result;
         }
 
-        PositionSync();
         _missileShooter.DistributePlayerInfo(_player.transform.position);
     }
 
@@ -147,4 +157,13 @@ public class GameSceneManager : MonoBehaviour
         _missileShooter.gameObject.SetActive(false);
     }
 
+    private void StopResultObjects()
+    {
+    }
+
+    public void OnPlayButtonClicked()
+    {
+        _state = GameSceneState.InGame;
+
+    }
 }

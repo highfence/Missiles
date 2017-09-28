@@ -6,6 +6,5 @@ public class ButtonEvent : MonoBehaviour
 {
     void OnClick()
     {
-        Debug.Log("Button Clicked");
     }
 }
