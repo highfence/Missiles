@@ -81,8 +81,9 @@ public class Missile : MonoBehaviour
     {
         if (collision.gameObject.tag == "Missile")
         {
-            // TODO :: 죽음 처리 해줘야 함.
-            Debug.Log("Missile Dead!");
+            var explosion = Instantiate(Resources.Load("Private/ToonExplosion v1.0/Prefabs/Explosion") as GameObject);
+            explosion.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
+            explosion.transform.position = this.transform.position;
         }
     }
 

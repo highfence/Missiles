@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     public Vector2             _flightVector   { get; private set; }
     public Vector2             _aimVector      { get; private set; }
     public DirectionController _mainController { get;         set; }
+    public bool                _isPlayerDead   { get; private set; }
 
     [SerializeField]
     Animator _animator;
@@ -78,6 +79,9 @@ public class Player : MonoBehaviour
         {
             // TODO :: 죽음 처리 해줘야 함.
             Debug.Log("Player Dead!");
+            var explosion = Instantiate(Resources.Load("Private/ToonExplosion v1.0/Prefabs/Explosion") as GameObject);
+            explosion.transform.position = this.transform.position;
+            _isPlayerDead = true;
         }
     }
 
