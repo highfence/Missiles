@@ -21,7 +21,7 @@ public class DirectionController : MonoBehaviour
         // 컨트롤 스프라이트 렌더러 받아오기.
         _controllSprite = this.GetComponent<SpriteRenderer>();
 
-        _maxRadius = 100f;
+        _maxRadius = 30f;
     }
 
     private void Update()
@@ -33,10 +33,30 @@ public class DirectionController : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePosition.z = 0f;
+            var screenMousePosition = Input.mousePosition;
+            screenMousePosition.z = 0;
 
-            this.transform.position = mousePosition;
+            var worldMousePosition = Camera.main.ScreenToWorldPoint(screenMousePosition);
+            worldMousePosition.z = 0;
+
+            // 마우스 위치와 중앙 위치 사이의 거리 계산.
+            var distanceFromCenter = Vector2.Distance(new Vector2(screenMousePosition.x, screenMousePosition.y), _centerPosition);
+
+            // 거리가 최대 반지름보다 작다면 
+            if (distanceFromCenter <= _maxRadius)
+            {
+                // 마우스 위치에 컨트롤러를 놔준다.
+                this.transform.position = worldMousePosition;
+            }
+            // 거리가 최대 반지름보다 크다면
+            else
+            {
+                // 그 방향으로 반지름 크기만큼 진행한 위치를 집어넣어준다.
+                var maxPosition = Camera.main.ScreenToWorldPoint(Vector3.MoveTowards(_centerPosition, screenMousePosition, _maxRadius));
+                maxPosition.z = 0f;
+                this.transform.position = maxPosition;
+            }
+
         }
         else
         {
