@@ -29,7 +29,10 @@ public class GameSceneManager : MonoBehaviour
 
     void VariableInitialize()
     {
-        _playerPosition = new Vector2(0.5f, 0.3f);
+        var fixedPosition = new Vector2();
+        fixedPosition.x = Screen.width / 2;
+        fixedPosition.y = Screen.height / 2;
+        _playerPosition = Camera.main.ScreenToViewportPoint(fixedPosition);
     }
 
     #endregion

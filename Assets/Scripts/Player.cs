@@ -8,13 +8,30 @@ public class Player : MonoBehaviour
     #region VARIABLES
 
     public PlayerSpec _spec { get; private set; }
-    public Vector2 _flightVec { get; private set; }
+
+    public Vector2 _flightVec;
 
     [SerializeField]
     Animator _animator;
 
     [SerializeField]
     SpriteRenderer _renderer;
+
+    #endregion
+
+    #region UPDATE METHODS
+    
+    private void Update()
+    {
+        KeepSteerWithDirection();        
+    }
+
+    // 스프라이트의 방향이 방향 벡터와 알맞게 되도록 맞춰주는 메소드.
+    void KeepSteerWithDirection()
+    {
+        float angle = Mathf.Atan2(_flightVec.x, _flightVec.y) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+    }
 
     #endregion
 
@@ -35,7 +52,8 @@ public class Player : MonoBehaviour
         _renderer.sprite = Resources.Load(spritePath) as Sprite;
 
         _animator = this.GetComponent<Animator>();
-        _animator.runtimeAnimatorController = Resources.Load("Private/Type_" + _spec._type.ToString() + "/Controller_" + _spec._type.ToString()) as RuntimeAnimatorController;
+        var animatorPath = "Private/Type_" + _spec._type.ToString() + "/Controller_" + _spec._type.ToString();
+        _animator.runtimeAnimatorController = Resources.Load(animatorPath) as RuntimeAnimatorController;
     }
 
     #endregion
@@ -67,4 +85,5 @@ public class Player : MonoBehaviour
     }
 
     #endregion
+
 }
