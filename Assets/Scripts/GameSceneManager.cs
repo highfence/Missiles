@@ -12,6 +12,7 @@ public class GameSceneManager : MonoBehaviour
     Background          _background;
     DirectionController _controller;
     Camera              _gameCamera;
+    MissileShooter      _missileShooter;
 
     #endregion
 
@@ -24,6 +25,13 @@ public class GameSceneManager : MonoBehaviour
         PlayerInitialize();
         CameraInitialize();
         BackgroundInitialize();
+        MissileShooterInitialize();
+    }
+
+    private void MissileShooterInitialize()
+    {
+        _missileShooter = Instantiate(Resources.Load("Prefabs/MissileShooter") as GameObject).GetComponent<MissileShooter>();
+        _missileShooter.Initialize();
     }
 
     private void CameraInitialize()
@@ -77,6 +85,7 @@ public class GameSceneManager : MonoBehaviour
     void Update()
     {
         PositionSync();
+        _missileShooter.DistributePlayerInfo(_player.transform.position);
     }
 
     void PositionSync()
