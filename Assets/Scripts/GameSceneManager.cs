@@ -3,6 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameSceneState
+{
+    Home = 0,
+    InGame = 1,
+    Result = 2
+}
+
 public class GameSceneManager : MonoBehaviour
 {
     #region VARIABLES
@@ -11,8 +18,10 @@ public class GameSceneManager : MonoBehaviour
     Vector2             _playerInitialPosition;
     Background          _background;
     DirectionController _controller;
+    GameObject          _playButton;
     Camera              _gameCamera;
     MissileShooter      _missileShooter;
+    GameSceneState      _state;
 
     #endregion
 
@@ -20,8 +29,10 @@ public class GameSceneManager : MonoBehaviour
 
     void Start()
     {
+        _state = GameSceneState.Home;
+
         VariableInitialize();
-        ControllerInitialize();
+        UIInitialize();
         PlayerInitialize();
         CameraInitialize();
         BackgroundInitialize();
@@ -50,7 +61,7 @@ public class GameSceneManager : MonoBehaviour
         _background.transform.position = bgPosition;
     }
 
-    void ControllerInitialize()
+    void UIInitialize()
     {
         _controller = DirectionController.Factory.Create();
         var controllerPosition = new Vector2();
@@ -61,6 +72,12 @@ public class GameSceneManager : MonoBehaviour
 
         var uiSystem = FindObjectOfType<UISystem>();
         uiSystem.AttachUI(_controller.gameObject);
+
+        _playButton = Instantiate(Resources.Load("Prefabs/PlayButton")) as GameObject;
+        var buttonPosition = Camera.main.ScreenToWorldPoint(controllerPosition + new Vector2(0, 150));
+        buttonPosition.z = 0;
+        _playButton.transform.position = buttonPosition;
+        uiSystem.AttachUI(_playButton);
     }
 
     void PlayerInitialize()
@@ -76,7 +93,7 @@ public class GameSceneManager : MonoBehaviour
     {
         var fixedPosition = new Vector2();
         fixedPosition.x = Screen.width / 2;
-        fixedPosition.y = Screen.height / 2;
+        fixedPosition.y = Screen.height * 3 / 5;
         _playerInitialPosition = Camera.main.ScreenToWorldPoint(fixedPosition);
     }
 
@@ -84,6 +101,30 @@ public class GameSceneManager : MonoBehaviour
 
     void Update()
     {
+        HomeUpdate();
+        InGameUpdate();
+        ResultUpdate();
+    }
+
+    private void ResultUpdate()
+    {
+        if (_state != GameSceneState.Result) return;
+    }
+
+    private void HomeUpdate()
+    {
+        if (_state != GameSceneState.Home) return;
+    }
+
+    void InGameUpdate()
+    {
+        if (_state != GameSceneState.InGame) return;
+
+        if (_player._isPlayerDead == true)
+        {
+            _state = GameSceneState.Result;
+        }
+
         PositionSync();
         _missileShooter.DistributePlayerInfo(_player.transform.position);
     }
@@ -99,4 +140,11 @@ public class GameSceneManager : MonoBehaviour
         curPlayerPosition.z = 20;
         _background.transform.position = curPlayerPosition;
     }
+
+    void StopInGameObjects()
+    {
+        _controller.gameObject.SetActive(false);
+        _missileShooter.gameObject.SetActive(false);
+    }
+
 }

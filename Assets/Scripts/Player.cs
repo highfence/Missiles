@@ -42,6 +42,13 @@ public class Player : MonoBehaviour
         HandleVisualDirection();
     }
 
+    private void MakeInitial()
+    {
+        _flightVector = new Vector2(0, -1);
+        _renderer.enabled = true;
+        _isPlayerDead = false;
+    }
+
     // 스프라이트의 방향이 방향 벡터와 알맞게 되도록 맞춰주는 메소드.
     void HandleVisualDirection()
     {
@@ -81,7 +88,9 @@ public class Player : MonoBehaviour
             Debug.Log("Player Dead!");
             var explosion = Instantiate(Resources.Load("Private/ToonExplosion v1.0/Prefabs/Explosion") as GameObject);
             explosion.transform.position = this.transform.position;
+
             _isPlayerDead = true;
+            _renderer.enabled = false;
         }
     }
 

@@ -13,4 +13,10 @@ public class UISystem : MonoBehaviour
     {
         uiObject.transform.SetParent(_canvas.transform);
     }
+
+    public void AttachUIAt(GameObject uiObject, Vector3 position)
+    {
+        uiObject.transform.SetParent(_canvas.transform);
+        uiObject.transform.position = position;
+    }
 }
