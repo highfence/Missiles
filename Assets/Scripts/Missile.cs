@@ -45,10 +45,21 @@ public class Missile : MonoBehaviour
         _isMissileValid = true;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         GoStraight();
+    }
+
+    private void Update()
+    {
         CheckDead();
+        HandleVisualDirection();
+    }
+
+    private void HandleVisualDirection()
+    {
+        float angle = Mathf.Atan2(_flightVector.x, _flightVector.y) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(angle, Vector3.back);
     }
 
     public void SetPlayerPosition(Vector2 playerPosition)
