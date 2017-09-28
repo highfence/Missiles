@@ -72,6 +72,15 @@ public class Player : MonoBehaviour
         SpriteInitialize();
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Missile")
+        {
+            // TODO :: 죽음 처리 해줘야 함.
+            Debug.Log("Player Dead!");
+        }
+    }
+
     void SpriteInitialize()
     {
         _renderer = this.GetComponent<SpriteRenderer>();

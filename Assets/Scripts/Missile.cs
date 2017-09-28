@@ -48,7 +48,7 @@ public class Missile : MonoBehaviour
         _spec = new MissileSpec()
         {
             _type = MissileType.Basic,
-            _speed = 15f,
+            _speed = 7f,
             _rotate = 1f,
             _liveTime = 10f
         };
@@ -75,6 +75,15 @@ public class Missile : MonoBehaviour
     {
         CheckDead();
         HandleVisualDirection();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Missile")
+        {
+            // TODO :: 죽음 처리 해줘야 함.
+            Debug.Log("Missile Dead!");
+        }
     }
 
     private void HandleVisualDirection()
