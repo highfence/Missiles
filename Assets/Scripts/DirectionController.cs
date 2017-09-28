@@ -8,11 +8,8 @@ using UnityEngine;
  */
 public class DirectionController : MonoBehaviour
 {
-    public Vector2        _controllVector { get; private set; }
-
-    [SerializeField]
+    public Vector2        _controllVector { get; private set; } 
     public Vector2        _centerPosition { get; private set; }
-
     public float          _maxRadius      { get; private set; }
     public SpriteRenderer _controllSprite { get; private set; }
 
@@ -57,12 +54,20 @@ public class DirectionController : MonoBehaviour
                 this.transform.position = maxPosition;
             }
 
+            // 컨트롤 벡터를 갱신.
+            var unitVec = new Vector2(screenMousePosition.x - _centerPosition.x, screenMousePosition.y - _centerPosition.y);
+            unitVec.Normalize();
+
+            _controllVector = unitVec;
         }
         else
         {
             var worldCenter = Camera.main.ScreenToWorldPoint(_centerPosition);
             worldCenter.z = 0f;
             this.transform.position = worldCenter;
+
+            // 컨트롤 벡터를 갱신.
+            _controllVector = Vector2.zero;
         }
     }
 

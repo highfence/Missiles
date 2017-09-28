@@ -27,8 +27,6 @@ public class GameSceneManager : MonoBehaviour
         var controllerPosition = new Vector2();
         controllerPosition.x = Screen.width / 2;
         controllerPosition.y = Screen.height * 0.15f;
-        var worldPosition = Camera.main.ScreenToWorldPoint(controllerPosition);
-        worldPosition.z = 0f;
 
         _controller.SetInitialPosition(controllerPosition);
     }
@@ -39,6 +37,7 @@ public class GameSceneManager : MonoBehaviour
         // 그러면 Player Initialize 함수는 GameSceneManager의 Start 메소드가 아니라 Start 버튼을 누르면 호출.
         _player = Player.Factory.Create(PlayerType.Basic);
         _player.transform.position = _playerPosition;
+        _player._mainController = this._controller;
     }
 
     void VariableInitialize()

@@ -7,9 +7,10 @@ public class Player : MonoBehaviour
 {
     #region VARIABLES
 
-    public PlayerSpec _spec { get; private set; }
-
-    public Vector2 _flightVec;
+    public PlayerSpec          _spec           { get; private set; }
+    public Vector2             _flightVector   { get; private set; }
+    public Vector2             _aimVector      { get; private set; }
+    public DirectionController _mainController { get;         set; }
 
     [SerializeField]
     Animator _animator;
@@ -23,7 +24,7 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
+        HandleLogicDirection();        
     }
 
     private void Update()
@@ -34,9 +35,22 @@ public class Player : MonoBehaviour
     // 스프라이트의 방향이 방향 벡터와 알맞게 되도록 맞춰주는 메소드.
     void HandleVisualDirection()
     {
-        float angle        = Mathf.Atan2(_flightVec.x, _flightVec.y) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        float angle        = Mathf.Atan2(_flightVector.x, _flightVector.y) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(angle, Vector3.back);
     }
+
+    // DirectionController의 방향과 flightVector를 맞춰가는 메소드.
+    void HandleLogicDirection()
+    {
+        if (_mainController._controllVector != Vector2.zero)
+        {
+            _aimVector = _mainController._controllVector;
+        }
+
+        // TODO :: 방향이 차차 변하도록
+        _flightVector = _aimVector;
+    }
+
 
     #endregion
 
@@ -45,7 +59,7 @@ public class Player : MonoBehaviour
     public void Init(PlayerSpec spec)
     {
         _spec = spec;
-        _flightVec = new Vector2(0f, -1f);
+        _flightVector = new Vector2(0f, -1f);
 
         SpriteInitialize();
     }
