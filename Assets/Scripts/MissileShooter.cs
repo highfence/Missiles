@@ -30,6 +30,26 @@ public class MissileShooter : MonoBehaviour
     private void Update()
     {
         ShootMissile();
+        CheckDeadMissile();
+    }
+
+    private void CheckDeadMissile()
+    {
+        for (var i = 0; i < _poolSize; ++i)
+        {
+            var missile = _missilePool[i];
+
+            if (missile.activeSelf == false)
+                continue;
+
+            var missileInstance = missile.GetComponent<Missile>();
+
+            if (missileInstance._isMissileActive == false)
+            {
+                missile.GetComponent<Missile>().Clear();
+                missile.SetActive(false);
+            }
+        }
     }
 
     private void ShootMissile()
@@ -46,8 +66,8 @@ public class MissileShooter : MonoBehaviour
                 if (missile.activeSelf == true)
                     continue;
 
-                missile.SetActive(true);
                 missile.GetComponent<Missile>().Spawn(MissileType.Basic, _currentPlayerPosition);
+                missile.SetActive(true);
                 _accTime = 0f;
                 break;
             }

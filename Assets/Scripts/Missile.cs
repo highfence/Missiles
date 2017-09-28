@@ -19,14 +19,27 @@ public class Missile : MonoBehaviour
     float _outRange;
 
     public bool _isMissileValid { get; private set; }
+    public bool _isMissileActive { get; private set; }
 
     public void Awake()
     {
         _isMissileValid = false;
+        _isMissileActive = false;
         _renderer = this.GetComponent<SpriteRenderer>();
         _outRange = 20f;
 
         _basicMissile = Resources.Load<Sprite>("Sprites/BasicMissile");
+    }
+
+    public void Clear()
+    {
+        var color = _renderer.color;
+        color.a = 1;
+        _renderer.color = color;
+
+        _accTime = 0f;
+        _isMissileValid = false;
+        _isMissileActive = false;
     }
 
     public void Spawn(MissileType type, Vector2 currentPlayerPosision)
@@ -43,7 +56,6 @@ public class Missile : MonoBehaviour
         // TODO :: 스프라이트 렌더러에서 알맞은 미사일을 읽어와야 함.
         _renderer.sprite = _basicMissile;
 
-        // TODO :: 미사일 위치를 랜덤하게 해주어야 함.
         var randomUnitVec = new Vector2(UnityEngine.Random.Range(-1, 1), UnityEngine.Random.Range(-1, 1));
         randomUnitVec.Normalize();
         var spawnPosition = _playerPosition + randomUnitVec * _outRange;
@@ -51,6 +63,7 @@ public class Missile : MonoBehaviour
         this.transform.position = spawnPosition;
 
         _isMissileValid = true;
+        _isMissileActive = true;
     }
 
     private void FixedUpdate()
@@ -83,8 +96,24 @@ public class Missile : MonoBehaviour
         }
         else if (_isMissileValid == true)
         {
+            StartCoroutine("StartDisappear"); 
             _isMissileValid = false;
         }
+    }
+
+    IEnumerator StartDisappear()
+    {
+        var curColor = _renderer.color;
+
+        while (_renderer.color.a > 0.0f)
+        {
+            curColor.a -= 0.1f;
+            _renderer.color = curColor;
+
+            yield return new WaitForSeconds(0.05f);
+        }
+
+        _isMissileActive = false;
     }
 
     private void GoStraight()
