@@ -28,8 +28,6 @@ public class GameSceneManager : MonoBehaviour
 
     private void CameraInitialize()
     {
-        var original = GameObject.FindWithTag("MainCamera");
-
         _gameCamera = Instantiate(Resources.Load("Prefabs/Game Camera") as GameObject).GetComponent<Camera>();
         _gameCamera.enabled = true;
     }
@@ -78,8 +76,18 @@ public class GameSceneManager : MonoBehaviour
 
     void Update()
     {
+        PositionSync();
+    }
+
+    void PositionSync()
+    {
+        // 플레이어 포지션과 카메라 싱크.
         var curPlayerPosition = _player.transform.position;
         curPlayerPosition.z = -20;
         _gameCamera.transform.position = curPlayerPosition;
+
+        // 플레이어 포지션과 백그라운드 싱크.
+        curPlayerPosition.z = 20;
+        _background.transform.position = curPlayerPosition;
     }
 }

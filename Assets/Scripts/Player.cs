@@ -30,7 +30,10 @@ public class Player : MonoBehaviour
 
     private void GoStraight()
     {
+        var nextPosition = this.transform.position;
+        var delta = Time.deltaTime * new Vector3(_flightVector.x, _flightVector.y, 0) * _spec._speed;
 
+        this.transform.position = nextPosition + delta;
     }
 
     private void Update()
