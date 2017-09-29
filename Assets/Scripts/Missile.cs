@@ -81,6 +81,8 @@ public class Missile : MonoBehaviour
     {
         if (collision.gameObject.tag == "Missile")
         {
+            FindObjectOfType<GameSceneManager>()._makeColideTimes += 1;
+
             var explosion = Instantiate(Resources.Load("Private/ToonExplosion v1.0/Prefabs/Explosion") as GameObject);
             explosion.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
             explosion.transform.position = this.transform.position;

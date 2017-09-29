@@ -23,9 +23,15 @@ public class GameSceneManager : MonoBehaviour
     GameObject          _playButton;
     GameObject          _homeButton;
     GameObject          _title;
+    GameObject          _timeText;
     GameObject          _curtain;
+    GameObject          _scoreTitle;
+    GameObject          _score;
     Camera              _gameCamera;
     MissileShooter      _missileShooter;
+    int _time = 0;
+    public int _makeColideTimes = 0;
+    float _accTime = 0;
     public GameSceneState      _state;
     #endregion
 
@@ -111,6 +117,10 @@ public class GameSceneManager : MonoBehaviour
         uiSystem.AttachUI(_title);
 
         _curtain = Instantiate(Resources.Load("Prefabs/Curtain")) as GameObject;
+
+        _scoreTitle = GameObject.Find("Canvas/ScoreTitle");
+        _timeText = GameObject.Find("Canvas/Time");
+        _score = GameObject.Find("Canvas/Score");
     }
 
     private void OnHomeButtonClicked()
@@ -154,7 +164,7 @@ public class GameSceneManager : MonoBehaviour
 
         var curtainPosition = _player.transform.position;
         curtainPosition.z = 0;
-        _curtain.transform.position = curtainPosition; 
+        _curtain.transform.position = curtainPosition;
     }
 
     private void HomeUpdate()
@@ -170,6 +180,16 @@ public class GameSceneManager : MonoBehaviour
         if (_player._isPlayerDead == true)
         {
             StartCoroutine("GoToResultState");
+        }
+
+        _accTime += Time.deltaTime;
+
+        if (_accTime > 1)
+        {
+            _accTime -= 1;
+            _time += 1;
+
+            _timeText.GetComponent<Text>().text = _time.ToString();
         }
 
         _missileShooter.DistributePlayerInfo(_player.transform.position);
@@ -194,6 +214,7 @@ public class GameSceneManager : MonoBehaviour
     {
         _controller.gameObject.SetActive(false);
         _missileShooter.gameObject.SetActive(false);
+        _timeText.gameObject.SetActive(false);
     }
 
     void StopResultObjects()
@@ -201,6 +222,8 @@ public class GameSceneManager : MonoBehaviour
         _curtain.gameObject.SetActive(false);
         _playButton.gameObject.SetActive(false);
         _homeButton.gameObject.SetActive(false);
+        _scoreTitle.gameObject.SetActive(false);
+        _score.gameObject.SetActive(false);
     }
 
     void StopHomeObjects()
@@ -256,6 +279,10 @@ public class GameSceneManager : MonoBehaviour
     {
         _controller.gameObject.SetActive(true);
         _missileShooter.gameObject.SetActive(true);
+        _timeText.gameObject.SetActive(true);
+
+        _time = 0;
+        _makeColideTimes = 0;
     }
 
     IEnumerator GoToResultState()
@@ -287,6 +314,11 @@ public class GameSceneManager : MonoBehaviour
     {
         _playButton.gameObject.SetActive(true);
         _homeButton.gameObject.SetActive(true);
+        _scoreTitle.gameObject.SetActive(true);
+
+        _score.gameObject.SetActive(true);
+        var score = _time + 10 * _makeColideTimes;
+        _score.GetComponent<Text>().text = score.ToString();
     }
 
     private void StartHomeObjects()
