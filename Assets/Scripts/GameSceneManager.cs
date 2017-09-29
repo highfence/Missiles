@@ -189,7 +189,29 @@ public class GameSceneManager : MonoBehaviour
             _accTime -= 1;
             _time += 1;
 
-            _timeText.GetComponent<Text>().text = _time.ToString();
+            if (_time < 10)
+            {
+                _timeText.GetComponent<Text>().text = "0:0" + _time.ToString();
+            }
+            else if (_time < 60)
+            {
+                _timeText.GetComponent<Text>().text = "0:" + _time.ToString();
+            }
+            else
+            {
+                int minute = _time / 60;
+                int second = _time - 60 * minute;
+
+                if (second < 10)
+                {
+                    _timeText.GetComponent<Text>().text = minute.ToString() + ":0" + second.ToString();
+                }
+                else
+                {
+                    _timeText.GetComponent<Text>().text = minute.ToString() + ":" + second.ToString();
+                }
+            }
+
         }
 
         _missileShooter.DistributePlayerInfo(_player.transform.position);
