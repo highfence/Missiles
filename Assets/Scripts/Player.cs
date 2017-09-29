@@ -47,6 +47,8 @@ public class Player : MonoBehaviour
         _flightVector = new Vector2(0, -1);
         _renderer.enabled = true;
         _isPlayerDead = false;
+
+        HandleVisualDirection();
     }
 
     // 스프라이트의 방향이 방향 벡터와 알맞게 되도록 맞춰주는 메소드.

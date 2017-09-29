@@ -18,8 +18,10 @@ public class GameSceneManager : MonoBehaviour
     Player              _player;
     Vector2             _playerInitialPosition;
     Background          _background;
+    CloudMaker          _cloudMaker;
     DirectionController _controller;
     GameObject          _playButton;
+    GameObject          _homeButton;
     GameObject          _title;
     GameObject          _curtain;
     Camera              _gameCamera;
@@ -39,12 +41,18 @@ public class GameSceneManager : MonoBehaviour
         CameraInitialize();
         BackgroundInitialize();
         MissileShooterInitialize();
+        CloudMakerInitialize();
 
         StopInGameObjects();
         StopResultObjects();
         StartHomeObjects();
     }
 
+    private void CloudMakerInitialize()
+    {
+        _cloudMaker = Instantiate(Resources.Load("Prefabs/CloudMaker") as GameObject).GetComponent<CloudMaker>();
+        _cloudMaker.Initialize();
+    }
 
     private void MissileShooterInitialize()
     {
@@ -87,6 +95,14 @@ public class GameSceneManager : MonoBehaviour
         _playButton.GetComponent<Button>().onClick.AddListener(OnPlayButtonClicked);
 
         uiSystem.AttachUI(_playButton);
+        
+        _homeButton = Instantiate(Resources.Load("Prefabs/HomeButton")) as GameObject;
+        var homeButtonPosition = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width * 0.1f, Screen.height * 0.1f, 0));
+        homeButtonPosition.z = 0;
+        _homeButton.transform.position = homeButtonPosition;
+        _homeButton.GetComponent<Button>().onClick.AddListener(OnHomeButtonClicked);
+
+        uiSystem.AttachUI(_homeButton);
 
         _title = Instantiate(Resources.Load("Prefabs/Title")) as GameObject;
         var titlePosition = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height * 0.8f, 0));
@@ -95,6 +111,13 @@ public class GameSceneManager : MonoBehaviour
         uiSystem.AttachUI(_title);
 
         _curtain = Instantiate(Resources.Load("Prefabs/Curtain")) as GameObject;
+    }
+
+    private void OnHomeButtonClicked()
+    {
+        StopResultObjects();
+        _player.MakeInitial();
+        StartHomeObjects();
     }
 
     void PlayerInitialize()
@@ -162,6 +185,9 @@ public class GameSceneManager : MonoBehaviour
         // 플레이어 포지션과 백그라운드 싱크.
         curPlayerPosition.z = 20;
         _background.transform.position = curPlayerPosition;
+
+        // 구름 생성자에게 플레이어 포지션 싱크.
+        _cloudMaker.DistributePlayerInfo(curPlayerPosition);
     }
 
     void StopInGameObjects()
@@ -174,6 +200,7 @@ public class GameSceneManager : MonoBehaviour
     {
         _curtain.gameObject.SetActive(false);
         _playButton.gameObject.SetActive(false);
+        _homeButton.gameObject.SetActive(false);
     }
 
     void StopHomeObjects()
@@ -259,6 +286,7 @@ public class GameSceneManager : MonoBehaviour
     private void StartResultObjects()
     {
         _playButton.gameObject.SetActive(true);
+        _homeButton.gameObject.SetActive(true);
     }
 
     private void StartHomeObjects()
